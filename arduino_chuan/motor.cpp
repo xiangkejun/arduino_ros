@@ -1,4 +1,4 @@
-
+//xx
 #include "Arduino.h"
 
   int motor_go=9;
@@ -27,16 +27,23 @@ void go(double val)
 }
 void turn(int val)
 {
-  if(val > 0){ //left
+  if(val > 0)
+  { //left
     digitalWrite(INA,HIGH);
     digitalWrite(INB,LOW);
     analogWrite(TURN_MOTOR,val);
   }
-  if(val <= 0)  //right
+  if(val < 0)  //right
   {
     digitalWrite(INA,LOW);
     digitalWrite(INB,HIGH);
     analogWrite(TURN_MOTOR,-val);  
+  }
+  if(val == 0)  //stop
+  {
+    digitalWrite(INA,LOW);
+    digitalWrite(INB,LOW);
+    analogWrite(TURN_MOTOR, 0); 
   }
   
 }
