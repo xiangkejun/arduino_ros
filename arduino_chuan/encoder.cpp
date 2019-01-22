@@ -57,7 +57,7 @@ unsigned int data_read()
   CSN_H;
   CLK_H;
   delayMicroseconds(100);
-  return(out);
+  return out;
 }
 
 float getdegree()
