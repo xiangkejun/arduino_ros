@@ -20,22 +20,6 @@ double vx,vw;
 float cur_angle = 0.0;
 int guizheng_flag = 0;
 
-void vel_back( const geometry_msgs::Twist& msg){
-  digitalWrite(LED_BUILTIN, HIGH-digitalRead(LED_BUILTIN));   // blink the led  13
-  vx = msg.linear.x;
-  vw = msg.angular.z;
-Serial.print("vx= ");
-Serial.print(vx);
-Serial.print("vw= ");
-Serial.print(vw);
-  if(vx == 0.25 && vw == 1.25) //guizheng
-  {
-    guizheng_flag = 1;
-  }
-}
-
-ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel_mux/input/teleop", &vel_back );
-
 void chuan_go()
 {
    if(guizheng_flag == 1)   //归正
@@ -53,10 +37,12 @@ void chuan_go()
   }
   else   //正常运行
   {
-    if(cur_angle >= -60 && cur_angle < 60)
+        // turn(100*vw);   //0-125    255
+
+    if(cur_angle >= -60 && cur_angle <= 60)
     {
-      go(1000*vx);   // 0-200    255
-      turn(200*vw);   //0-200    255
+      go(600*vx);   // 0-100    255
+      turn(100*vw);   //0-125    255
     }
     else 
     {
@@ -65,6 +51,30 @@ void chuan_go()
 
   }
 }
+
+void vel_back( const geometry_msgs::Twist& msg){
+  digitalWrite(LED_BUILTIN, HIGH-digitalRead(LED_BUILTIN));   // blink the led  13
+  vx = msg.linear.x;
+  vw = msg.angular.z;
+//Serial.print("vx= ");
+//Serial.print(vx);
+//Serial.print("vw= ");
+//Serial.print(vw);
+//  Serial.print("cur_angle= ");
+//  Serial.print(cur_angle);
+
+  if(vx == 0.25 && vw == 1.25) //guizheng
+  {
+    guizheng_flag = 1;
+  }
+
+    // turn(100);
+   // turn(100*vw);   //0-125    255
+  chuan_go();
+}
+
+ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel_mux/input/teleop", &vel_back );
+
 
 void setup()
 { 
@@ -79,8 +89,11 @@ void loop()
 {  
   nh.spinOnce();
   cur_angle = getdegree();
+  
+  Serial.print("cur_angle= ");
+  Serial.print(cur_angle);
 
-  chuan_go();
+ // chuan_go();
   
   delay(1);  //ms
 }
