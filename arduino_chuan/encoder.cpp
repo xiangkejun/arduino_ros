@@ -20,7 +20,7 @@ void encoder_init()
 #define CLK_H digitalWrite(CLK,HIGH)
 #define CSN_L digitalWrite(CSN,LOW)
 #define CLK_L digitalWrite(CLK,LOW)
-#define DIO_in   digitalRead(DIO)&0x0800
+#define DIO_in   digitalRead(DIO)   //HIGH=1 /LOW=0
 
 unsigned int data_p = 0;
 unsigned int out = 0;
@@ -66,4 +66,3 @@ float getdegree()
   angle = data_read();
   return angle*360.0/4096.0;
 }
-
