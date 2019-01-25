@@ -11,13 +11,15 @@ void go(double val);
 
 void encoder_init();
 unsigned int data_read();
-float getdegree();
+//float getdegree();
+float get_true_degree();
 
 
 ros::NodeHandle  nh;
 
 double vx,vw;
-float cur_angle = 0.0;
+//float cur_angle = 0.0;
+float now_angle;
 int guizheng_flag = 0;
 
 void chuan_go()
@@ -25,21 +27,21 @@ void chuan_go()
    if(guizheng_flag == 1)   //归正
   {
     Serial.print("guizheng!!");
-    if(cur_angle > -5 && cur_angle <5)
+    if(now_angle > -5 && now_angle <5)
     {
       guizheng_flag = 0;
       turn(0);
     }
     else
     {
-      turn( -cur_angle);
+      turn( -now_angle);
     } 
   }
   else   //正常运行
   {
         // turn(100*vw);   //0-125    255
 
-    if(cur_angle >= -60 && cur_angle <= 60)
+    if(now_angle >= -60 && now_angle <= 60)
     {
       go(600*vx);   // 0-100    255
       turn(100*vw);   //0-125    255
@@ -88,10 +90,12 @@ void setup()
 void loop()
 {  
   nh.spinOnce();
-  cur_angle = getdegree();
+ // cur_angle = getdegree();
+  now_angle = get_true_degree();
+
   
-  Serial.print("cur_angle= ");
-  Serial.print(cur_angle);
+  Serial.print("now_angle= ");
+  Serial.print(now_angle);
 
  // chuan_go();
   
