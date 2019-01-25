@@ -6,13 +6,13 @@ int CLK = 24;  //clk
 //const int DIO = A0;
 int DIO = 25;
 int CSN = 26;
-int PROG = 27;
+//int PROG = 27;
 void encoder_init()
 {
   pinMode(CLK, OUTPUT);
   pinMode(DIO, INPUT);
   pinMode(CSN, OUTPUT);
-  pinMode(PROG,OUTPUT);
+//  pinMode(PROG,OUTPUT);
 }
 
 
@@ -60,9 +60,32 @@ unsigned int data_read()
   return out;
 }
 
-float getdegree()
+float getdegree()  //当前绝对角度
 {
   float angle;
   angle = data_read();
   return angle*360.0/4096.0;
 }
+
+
+
+static int num_of_turn = 0;  //编码器圈数
+float  zero_angle = 180;   //零位初始值
+float get_true_degree()
+{
+  float cur_angle = 0.0,pre_angle = 0.0,incr_angle;
+  
+  cur_angle = getdegree();
+  incr_angle = cur_angle - pre_angle;
+  pre_angle = cur_angle;
+  if(incr_angle < -300)  //跳变
+  {
+    num_of_turn++;
+  }
+  else if(incr_angle > 300) //跳变
+  {
+    num_of_turn--;
+  }
+  return ((cur_angle + 360.0*num_of_turn)-zero_angle)*0.5;
+}
+
