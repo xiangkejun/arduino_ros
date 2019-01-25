@@ -99,5 +99,5 @@ void loop()
 
  // chuan_go();
   
-  delay(1);  //ms
+  delay(10);  //ms
 }
